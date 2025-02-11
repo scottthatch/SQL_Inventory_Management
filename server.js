@@ -4,8 +4,16 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
+
+// CORS configuration
+const corsOptions = {
+    origin: "http://localhost:3000",  // Allow requests from React frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+};
+app.use(cors(corsOptions));  // Use CORS middleware with the config
+
 app.use(express.json());
-app.use(cors());
 
 // SQL Server connection config
 const dbConfig = {
@@ -25,7 +33,7 @@ sql.connect(dbConfig)
     .then(poolInstance => {
         pool = poolInstance;
         console.log("Connected to SQL Server");
-        
+
         // Query the database name to ensure you're connected to the right one
         return pool.request().query("SELECT DB_NAME() AS CurrentDatabase");
     })
